@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Precificação - Estética de Motos (Avançado)</title>
+<style>
+  body{background:#0a0a0f;color:#fff;font-family:Inter,Arial;padding:18px}
+  .card{background:#14141f;padding:16px;border-radius:12px;max-width:1000px;margin:auto;border:1px solid rgba(122,0,255,0.12)}
+  h1{color:#9b5bff;margin:0 0 6px 0}
+  label{display:block;margin-top:10px;color:#bfb8c8}
+  input{width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:#fff}
+  .row{display:flex;gap:10px}
+  .row>div{flex:1}
+  .btn{margin-top:12px;padding:10px 12px;background:#7a00ff;border:none;border-radius:8px;color:#fff;cursor:pointer}
+  .services{margin-top:14px}
+  .service-item{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-top:8px;align-items:center}
+  .muted{color:#bfb8c8;font-size:13px}
+  .list-item{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .list-item input{flex:1;padding:8px}
+  .small-btn{padding:6px 8px;border-radius:6px;border:none;cursor:pointer}
+  .danger{background:#ff3b6b;color:#fff}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Precificação Avançada — Profissional</h1>
+  <p class="muted">Adicione e edite seus custos fixos e variáveis. O sistema salva tudo automaticamente e calcula o valor da hora com base na sua meta mensal.</p>
+
+  <label>Custos fixos detalhados</label>
+  <div id="fixedList"></div>
+  <div class="row">
+    <input id="fixedName" placeholder="Nome (Ex: Água)">
+    <input id="fixedValue" placeholder="Valor (R$)">
+    <button class="btn" onclick="addFixed()">Adicionar</button>
+  </div>
+
+  <label style="margin-top:12px">Custos variáveis (por serviço)</label>
+  <div id="varList"></div>
+  <div class="row">
+    <input id="varName" placeholder="Nome (Ex: Panos)">
+    <input id="varValue" placeholder="Valor (R$)">
+    <button class="btn" onclick="addVar()">Adicionar</button>
+  </div>
+
+  <label style="margin-top:12px">Horas trabalhadas por mês</label>
+  <input id="hoursPerMonth" placeholder="Ex: 64" value="64">
+
+  <label>Margem de lucro (%)</label>
+  <input id="profitMargin" placeholder="Ex: 30" value="30">
+
+  <hr style="border-color:rgba(255,255,255,0.04);margin-top:12px">
+
+  <label>Serviços</label>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <input id="svcName" placeholder="Ex: Lavagem Detalhada" style="flex:2">
+    <input id="svcHours" placeholder="Horas" style="width:100px">
+    <input id="svcExtra" placeholder="Custo variável extra (R$)" style="width:140px">
+    <button class="btn" onclick="addService()">Adicionar serviço</button>
+  </div>
+
+  <div class="services" id="servicesList"></div>
+
+  <div style="display:flex;gap:10px;margin-top:14px">
+    <button class="btn" onclick="savePricing()">Salvar precificação</button>
+    <button class="btn" onclick="applySample()">Importar exemplo</button>
+    <button class="btn" onclick="exportPricing()">Exportar JSON</button>
+    <button class="btn" onclick="backToMain()">Voltar</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_PRICING = 'estetica_pricing_v1';
+let pricing = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null') || {
+  fixedItems: [], varItems: [], hoursPerMonth:64, profitMargin:30, services:[], selected:-1
+};
+
+function persist() {
+  localStorage.setItem(STORAGE_PRICING, JSON.stringify(pricing));
+}
+
+function renderFixed(){
+  const el = document.getElementById('fixedList');
+  el.innerHTML='';
+  pricing.fixedItems.forEach((f,idx)=>{
+    const div=document.createElement('div');
+    div.className='list-item';
+    div.innerHTML = `
+      <input value="${f.name}" onchange="editFixed(${idx},'name',this.value)">
+      <input value="${f.value}" onchange="editFixed(${idx},'value',parseFloat(this.value)||0)">
+      <button class="small-btn danger" onclick="removeFixed(${idx})">Remover</button>`;
+    el.appendChild(div);
+  });
+}
+function editFixed(idx,key,val){ pricing.fixedItems[idx][key]=val; persist(); updateCosts(); renderPreview(); }
+
+function renderVar(){
+  const el=document.getElementById('varList');
+  el.innerHTML='';
+  pricing.varItems.forEach((v,idx)=>{
+    const div=document.createElement('div');
+    div.className='list-item';
+    div.innerHTML=`
+      <input value="${v.name}" onchange="editVar(${idx},'name',this.value)">
+      <input value="${v.value}" onchange="editVar(${idx},'value',parseFloat(this.value)||0)">
+      <button class="small-btn danger" onclick="removeVar(${idx})">Remover</button>`;
+    el.appendChild(div);
+  });
+}
+function editVar(idx,key,val){ pricing.varItems[idx][key]=val; persist(); updateCosts(); renderPreview(); }
+
+function addFixed(){
+  const name=document.getElementById('fixedName').value.trim();
+  const val=parseFloat(document.getElementById('fixedValue').value);
+  if(!name||isNaN(val)){alert('Preencha nome e valor');return;}
+  pricing.fixedItems.push({name,value:val});
+  persist(); renderFixed();
+  document.getElementById('fixedName').value='';
+  document.getElementById('fixedValue').value='';
+  updateCosts(); renderPreview();
+}
+function removeFixed(i){pricing.fixedItems.splice(i,1);persist();renderFixed();updateCosts();renderPreview();}
+
+function addVar(){
+  const name=document.getElementById('varName').value.trim();
+  const val=parseFloat(document.getElementById('varValue').value);
+  if(!name||isNaN(val)){alert('Preencha nome e valor');return;}
+  pricing.varItems.push({name,value:val});
+  persist(); renderVar();
+  document.getElementById('varName').value='';
+  document.getElementById('varValue').value='';
+  updateCosts(); renderPreview();
+}
+function removeVar(i){pricing.varItems.splice(i,1);persist();renderVar();updateCosts();renderPreview();}
+
+function addService(){
+  const name=document.getElementById('svcName').value.trim();
+  const hours=parseFloat(document.getElementById('svcHours').value);
+  const extra=parseFloat(document.getElementById('svcExtra').value);
+  if(!name||isNaN(hours)||isNaN(extra)){alert('Preencha todos os campos');return;}
+  pricing.services.push({name,hours,extraVar:extra,cost:0});
+  persist();
+  renderServices();
+  document.getElementById('svcName').value='';
+  document.getElementById('svcHours').value='';
+  document.getElementById('svcExtra').value='';
+}
+
+function removeService(i){pricing.services.splice(i,1);persist();renderServices();}
+
+function calcFixedTotal(){return pricing.fixedItems.reduce((s,it)=>s+Number(it.value||0),0);}
+function calcVarTotal(){return pricing.varItems.reduce((s,it)=>s+Number(it.value||0),0);}
+
+function getHourRate(){
+  const fixed=calcFixedTotal();
+  const variable=calcVarTotal();
+  const hours=Number(pricing.hoursPerMonth)||64;
+  const margin=(Number(pricing.profitMargin)||0)/100;
+  const base=(fixed+variable)/hours;
+  return base*(1+margin);
+}
+
+function calcCostForService(s){
+  const hourRate=getHourRate();
+  const labor=(Number(s.hours)||0)*hourRate;
+  const extra=Number(s.extraVar)||0;
+  return labor+extra;
+}
+
+function updateCosts(){
+  pricing.hoursPerMonth=Number(document.getElementById('hoursPerMonth').value)||64;
+  pricing.profitMargin=Number(document.getElementById('profitMargin').value)||30;
+  pricing.services=pricing.services.map(s=>({...s,cost:calcCostForService(s)}));
+  persist();
+}
+
+function renderServices(){
+  const el=document.getElementById('servicesList');
+  el.innerHTML='';
+  pricing.services.forEach((s,idx)=>{
+    const div=document.createElement('div');
+    div.className='service-item';
+    div.innerHTML=`
+      <div><strong>${s.name}</strong><div class='muted'>Horas: ${s.hours} • Extra: R$ ${s.extraVar.toFixed(2)}</div></div>
+      <div><div style="text-align:right"><div style="font-weight:700">R$ ${s.cost.toFixed(2)}</div><button class="small-btn danger" onclick="removeService(${idx})">Remover</button></div></div>`;
+    el.appendChild(div);
+  });
+  updateCosts(); renderPreview();
+}
+
+function renderPreview(){
+  let existing=document.getElementById('previewBox');
+  if(!existing){existing=document.createElement('div');existing.id='previewBox';existing.style.marginTop='12px';document.getElementById('servicesList').after(existing);}
+  const fixedTotal=calcFixedTotal();
+  const varTotal=calcVarTotal();
+  const hourRate=getHourRate();
+  let html=`<div class="muted">Custos fixos: R$ ${fixedTotal.toFixed(2)} • Custos variáveis: R$ ${varTotal.toFixed(2)} • Valor hora (auto): R$ ${hourRate.toFixed(2)}</div>`;
+  html+='<div style="margin-top:8px">';
+  pricing.services.forEach(s=>{html+=`<div style="padding:6px;border-radius:6px;background:rgba(255,255,255,0.02);margin-top:6px"><strong>${s.name}</strong> — Custo estimado: R$ ${s.cost.toFixed(2)}</div>`;});
+  html+='</div>';
+  existing.innerHTML=html;
+}
+
+function savePricing(){
+  updateCosts();
+  pricing._lastUpdated=new Date().toISOString();
+  persist();
+  alert('Precificação salva!');
+}
+
+function applySample(){
+  pricing={
+    fixedItems:[{name:'Aluguel',value:1200},{name:'Água',value:120},{name:'Energia',value:250}],
+    varItems:[{name:'Panos',value:1.2},{name:'Microfibra',value:2}],
+    hoursPerMonth:64,profitMargin:30,
+    services:[{name:'Lavagem Detalhada',hours:1.2,extraVar:5,cost:0},{name:'Lavagem Premium',hours:2,extraVar:12,cost:0}],
+    selected:-1
+  };
+  persist(); renderFixed(); renderVar(); renderServices();
+  document.getElementById('hoursPerMonth').value=pricing.hoursPerMonth;
+  document.getElementById('profitMargin').value=pricing.profitMargin;
+}
+
+function exportPricing(){
+  const blob=new Blob([JSON.stringify(pricing,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='pricing.json';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);
+}
+
+function loadForm(){
+  document.getElementById('hoursPerMonth').value=pricing.hoursPerMonth;
+  document.getElementById('profitMargin').value=pricing.profitMargin;
+  renderFixed(); renderVar(); renderServices(); renderPreview();
+}
+
+function backToMain(){ savePricing(); window.location.href='index.html'; }
+
+loadForm();
+</script>
+</body>
+</html>
