@@ -1,0 +1,12 @@
+[
+  { "nome": "Canelinha Finisher", "preco": 39.9, "quantidade": 2000 },
+  { "nome": "Cross Mol Finisher", "preco": 62.40, "quantidade": 2000 },
+  { "nome": "MultiClean", "preco": 25.0, "quantidade": 1000 },
+  { "nome": "Alumax Vintex", "preco": 25, "quantidade": 1500 },
+  { "nome": "Verniz de motor Motor Shine Protelim", "preco": 56.40, "quantidade": 500 },
+  { "nome": "Selante para pneus Protelim", "preco": 69.80, "quantidade": 500 },
+  { "nome": "Hydrox Fast Vonixx", "preco": 39.90, "quantidade": 500 },
+  { "nome": "Cera Cherry Wax Zacs", "preco": 34.87, "quantidade": 1000 },
+  { "nome": "Revitalizador de plásticos Zacs", "preco": 35.88, "quantidade": 500 },
+  { "nome": "Motul C2", "preco": 42.95, "quantidade": 200 }
+]
