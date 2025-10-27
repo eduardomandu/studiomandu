@@ -79,6 +79,7 @@
     <button class="btn" onclick="savePricing()">Salvar precificação</button>
     <button class="btn" onclick="applySample()">Importar exemplo</button>
     <button class="btn" onclick="exportPricing()">Exportar JSON</button>
+    <button class="btn" onclick="exportarJSONCompleto()">Exportar JSON Completo</button>
     <button class="btn" onclick="backToMain()">Voltar</button>
   </div>
 </div>
@@ -251,6 +252,30 @@ function loadForm(){
 }
 
 function backToMain(){ savePricing(); window.location.href='index.html'; }
+
+/* 🔥 NOVA FUNÇÃO: exporta produtos + precificação para um único JSON */
+function exportarJSONCompleto() {
+  try {
+    const produtos = JSON.parse(localStorage.getItem('estetica_produtos_v1') || '[]');
+    const precificacao = pricing;
+    const data = { produtos, precificacao };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'produtos.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      a.remove();
+    }, 500);
+  } catch (e) {
+    console.error('Erro ao exportar JSON completo:', e);
+    alert('Erro ao exportar JSON completo. Verifique o console.');
+  }
+}
 
 loadForm();
 </script>
