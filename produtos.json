@@ -1,12 +1,75 @@
-[
-  { "nome": "Canelinha Finisher", "preco": 39.9, "quantidade": 2000 },
-  { "nome": "Cross Mol Finisher", "preco": 62.40, "quantidade": 2000 },
-  { "nome": "MultiClean", "preco": 25.0, "quantidade": 1000 },
-  { "nome": "Alumax Vintex", "preco": 25, "quantidade": 1500 },
-  { "nome": "Verniz de motor Motor Shine Protelim", "preco": 56.40, "quantidade": 500 },
-  { "nome": "Selante para pneus Protelim", "preco": 69.80, "quantidade": 500 },
-  { "nome": "Hydrox Fast Vonixx", "preco": 39.90, "quantidade": 500 },
-  { "nome": "Cera Cherry Wax Zacs", "preco": 34.87, "quantidade": 1000 },
-  { "nome": "Revitalizador de plásticos Zacs", "preco": 35.88, "quantidade": 500 },
-  { "nome": "Motul C2", "preco": 42.95, "quantidade": 200 }
-]
+{
+  "produtos": [
+    {
+      "nome": "Canelinha - Finisher",
+      "preco": 39.9,
+      "quantidade": 2000
+    },
+    {
+      "nome": "Cross Mol - Finisher",
+      "preco": 62.40,
+      "quantidade": 2000
+    },
+    {
+      "nome": "MultiClean - Autolimpe",
+      "preco": 25.00,
+      "quantidade": 2000
+    },
+    {
+      "nome": "Alumax - Vonixx",
+      "preco": 25.00,
+      "quantidade": 2000
+    },
+    {
+      "nome": "Motor Shine - Protelim",
+      "preco": 56.40,
+      "quantidade": 2000
+    },
+    {
+      "nome": "Selante para Pneus Protelim",
+      "preco": 69.80,
+      "quantidade": 2000
+    },
+    {
+      "nome": "Hydrox Fast - Vonixx",
+      "preco": 39.90,
+      "quantidade": 2000
+    },
+    {
+      "nome": "Cherry Wax - Zacs",
+      "preco": 34.87,
+      "quantidade": 1000
+    },
+    {
+      "nome": "Zucs - Zacs",
+      "preco": 35.88,
+      "quantidade": 500
+    },
+    {
+      "nome": "Motul C2 - Motul",
+      "preco": 42.95,
+      "quantidade": 200
+    }
+
+  ],
+
+  "precificacao": {
+    "custosFixos": [
+      { "nome": "Aluguel", "valor": 800 },
+      { "nome": "Energia elétrica", "valor": 300 },
+      { "nome": "Água", "valor": 120 },
+      { "nome": "Internet", "valor": 100 }
+    ],
+
+    "custosVariaveis": [
+      { "nome": "Produtos de limpeza", "valor": 250 },
+      { "nome": "Deslocamento", "valor": 80 }
+    ],
+
+    "servicos": [
+      { "name": "Lavagem Completa", "cost": 80, "hours": 2 },
+      { "name": "Detail Premium", "cost": 150, "hours": 3 },
+      { "name": "Vitrificação", "cost": 250, "hours": 4 }
+    ]
+  }
+}
