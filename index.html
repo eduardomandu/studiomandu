@@ -1,510 +1,460 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Studio Mandú - System</title>
-<!-- libs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Studio Mandú - System</title>
 
-<style>
-:root{
-  --bg:#0a0a0f; --card:#14141f; --muted:#bfb8c8;
-  --accent:#7a00ff; --accent-2:#9b5bff; --glass: rgba(255,255,255,0.03);
-  --radius:12px; --pad:14px;
-}
-*{box-sizing:border-box}
-body{font-family:Inter,system-ui,Arial;background:var(--bg);color:#eee;margin:0;padding:20px}
-header{display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;margin-bottom:12px}
-#logoArea{width:220px;height:100px;border-radius:10px;background:linear-gradient(180deg,#111,#16161a);border:2px dashed var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden}
-h1{margin:8px 0 0;color:var(--accent-2)}
-.container{max-width:1100px;margin:10px auto;display:grid;grid-template-columns:1fr 420px;gap:18px}
-.full{grid-column:1/3}
-section{background:var(--card);padding:var(--pad);border-radius:var(--radius);border:1px solid rgba(122,0,255,0.12)}
-label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
-input,select,textarea,button{font-family:inherit}
-input,select,textarea{width:100%;padding:10px;margin-top:8px;border-radius:10px;border:none;background:var(--glass);color:#fff}
-button{background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;padding:10px 12px;border-radius:10px;color:#fff;font-weight:600;cursor:pointer}
-.small{padding:8px 10px;font-size:13px}
-.row{display:flex;gap:12px}
-.col{flex:1}
-.produto-card{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));margin-top:10px;border:1px solid rgba(255,255,255,0.03)}
-.produto-info{font-size:14px}
-.btn-danger{background:#ff3b6b}
-.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
-.muted{color:var(--muted);font-size:13px}
-#listaUsos{max-height:320px;overflow:auto;margin-top:8px}
+  <!-- libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-#logoArea {
-  width: 220px;
-  height: 120px;
-  border-radius: 10px;
-  background: linear-gradient(180deg,#111 0%, #16161a 100%);
-  border: 2px dashed var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.logo-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 0 14px rgba(155,91,255,0.9)) brightness(1.2);
-  animation: neonFloat 3.8s ease-in-out infinite;
-}
-
-/* animação suave pra deixar com vibe premium */
-@keyframes neonFloat {
-  0% { transform: translateY(0px); filter: drop-shadow(0 0 10px rgba(155,91,255,0.7)); }
-  50% { transform: translateY(-4px); filter: drop-shadow(0 0 18px rgba(155,91,255,1)); }
-  100% { transform: translateY(0px); filter: drop-shadow(0 0 10px rgba(155,91,255,0.7)); }
-}
-
-/* Checklist deluxe */
-.check-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.check-card{background:linear-gradient(180deg, rgba(122,0,255,0.04), rgba(98,0,204,0.02));border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:transform .12s ease, box-shadow .14s}
-.check-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(122,0,255,0.08)}
-.check-card.checked{background:linear-gradient(90deg, rgba(122,0,255,0.18), rgba(155,91,255,0.08));box-shadow:0 10px 26px rgba(122,0,255,0.12)}
-.check-card svg{width:36px;height:36px;flex-shrink:0}
-.check-card .title{font-weight:700}
-.check-card .sub{font-size:12px;color:var(--muted);margin-top:6px}
-.check-card input{display:none}
-
-/* responsive */
-@media(max-width:980px){.container{grid-template-columns:1fr}.full{grid-column:1}}
-</style>
+  <!-- visual (separate) -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <button id="openPricing" style="position:absolute;top:20px;right:20px">Precificação</button>
+  <header class="site-header">
+    <button id="openPricing" class="btn-floating">Precificação</button>
 
-  <div id="logoArea">
-    <img src="logo.png"
-         alt="Logo Studio Mandú"
-         class="logo-img" />
-  </div>
+    <div id="logoArea" class="logo-area">
+      <img src="logo.png" alt="Logo Studio Mandú" class="logo-img" />
+    </div>
 
-</header>
+    <h1 class="site-title">Studio Mandú — Estética Profissional</h1>
+  </header>
 
-<!-- resto do código permanece idêntico -->
-
-<div class="container">
-  <div>
-    <section>
-      <h3>Cadastro de Produtos</h3>
-      <label>Nome do produto</label>
-      <input id="produtoNome" placeholder="Ex: Canelinha Finisher">
-      <div class="row">
-        <div class="col">
-          <label>Preço (R$)</label>
-          <input id="produtoPreco" type="number" step="0.01" placeholder="Ex: 39.90">
+  <main class="container">
+    <div class="left-col">
+      <section class="card">
+        <h3>Cadastro de Produtos</h3>
+        <label>Nome do produto</label>
+        <input id="produtoNome" placeholder="Ex: Canelinha Finisher">
+        <div class="row">
+          <div class="col">
+            <label>Preço (R$)</label>
+            <input id="produtoPreco" type="number" step="0.01" placeholder="Ex: 39.90">
+          </div>
+          <div class="col">
+            <label>Qtd. (ml)</label>
+            <input id="produtoML" type="number" placeholder="Ex: 500">
+          </div>
         </div>
-        <div class="col">
-          <label>Qtd. (ml)</label>
-          <input id="produtoML" type="number" placeholder="Ex: 500">
+
+        <div class="row gap10">
+          <button onclick="addProduto()" class="btn">Adicionar produto</button>
+          <button class="btn ghost" onclick="importDemo()">Importar produtos</button>
         </div>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:10px">
-        <button onclick="addProduto()">Adicionar produto</button>
-        <button class="ghost" onclick="importDemo()">Importar produtos padrão</button>
-      </div>
-      <div id="produtosList" style="margin-top:12px"></div>
-    </section>
 
-    <section style="margin-top:16px">
-      <h3>Checklist Deluxe</h3>
-      <div class="check-grid" id="checklistGrid"></div>
-      <label class="muted" style="margin-top:10px">Marque cada item durante o serviço — será incluído no PDF final.</label>
-    </section>
-  </div>
+        <div id="produtosList" class="list-area"></div>
+      </section>
 
-  <div>
-    <section>
-      <h3>Uso no Serviço</h3>
-      <label>Selecione produto</label>
-      <select id="listaProdutos"></select>
-      <label>Quantidade usada (ml)</label>
-      <input id="qtdUsada" type="number" placeholder="Ex: 20">
-      <div style="display:flex;gap:10px;margin-top:10px">
-        <button onclick="addUso()">Adicionar ao cálculo</button>
-        <button class="ghost" onclick="clearUsos()">Limpar usos</button>
-      </div>
+      <section class="card" style="margin-top:14px;">
+        <div class="section-header">
+          <h3>Checklist Deluxe</h3>
+          <div class="section-actions">
+            <button class="ghost small" onclick="limparChecklist()" style="margin-bottom:0">Limpar checklist</button>
+          </div>
+        </div>
+        <div class="check-grid" id="checklistGrid"></div>
+        <p class="muted small mt8">Marque cada item durante o serviço — será incluído no PDF final.</p>
+      </section>
+    </div>
 
-      <h4 style="margin-top:12px">Produtos usados</h4>
-      <div id="listaUsos"></div>
+    <div class="right-col">
+      <section class="card">
+        <h3>Uso no Serviço</h3>
+        <label>Selecione produto</label>
+        <select id="listaProdutos"></select>
 
-      <label>Serviço selecionado (precificação)</label>
-      <select id="selectService"><option value="-1">Nenhum serviço configurado</option></select>
+        <label>Quantidade usada (ml)</label>
+        <input id="qtdUsada" type="number" placeholder="Ex: 20">
 
-      <h3 style="margin-top:14px">Total gasto em produtos: R$ <span id="totalGasto">0.00</span></h3>
+        <div class="row gap10" style="margin-top:10px;">
+          <button onclick="addUso()" class="btn">Adicionar ao cálculo</button>
+          <button class="btn ghost" onclick="clearUsos()">Limpar usos</button>
+        </div>
 
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button onclick="gerarPDF()">Gerar relatório PDF</button>
-        <button class="ghost" onclick="exportarJSON()">Exportar dados (.json)</button>
-      </div>
+        <h4 class="mt12">Produtos usados</h4>
+        <div id="listaUsos" class="list-area"></div>
 
-      <label class="muted" style="margin-top:8px;display:block">Produtos salvos no navegador (localStorage).</label>
-    </section>
+        <label>Serviço selecionado (precificação)</label>
+        <select id="selectService"><option value="-1">Nenhum serviço configurado</option></select>
 
-    <section style="margin-top:16px">
-      <h3>Configurações</h3>
-      <label>Nome da estética</label>
-      <input id="nomeEstetica" placeholder="Ex: Meu Detail Pro">
-      <label>Nome do cliente / moto</label>
-      <input id="nomeCliente" placeholder="Ex: João - Honda CG 160">
-      <label>Observações</label>
-      <textarea id="obs" rows="3" placeholder="Observações do serviço..."></textarea>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button onclick="salvarConfig()">Salvar configuração</button>
-        <button class="ghost" onclick="carregarConfig()">Carregar configur.</button>
-      </div>
-    </section>
-  </div>
+        <h3 class="mt14">Total gasto em produtos: R$ <span id="totalGasto">0.00</span></h3>
 
-  <div class="full">
-    <section>
-      <h3>Como usar / Persistência</h3>
-      <ol>
-        <li>Abra <strong>pricing.html</strong> e configure custos fixos/variáveis e serviços.</li>
-        <li>Volte à página principal e selecione o serviço.</li>
-        <li>Cadastre produtos e registre usos em ml.</li>
-        <li>Marque checklist e gere o PDF final.</li>
-      </ol>
-    </section>
-  </div>
-</div>
+        <div class="row gap8 mt12">
+          <button onclick="gerarPDF()" class="btn">Gerar relatório PDF</button>
+          <button class="btn ghost" onclick="exportarJSON()">Exportar (.json)</button>
+        </div>
 
-<footer style="margin-top:18px;text-align:center;color:var(--muted)">Premium Detail + Luxury • Preto & Roxo</footer>
+        <p class="muted mt8">Produtos salvos no navegador (localStorage).</p>
+      </section>
 
-<script>
-/* ---------- Storage keys ---------- */
-const STORAGE_KEY = 'estetica_produtos_v1';
-const STORAGE_USOS = 'estetica_usos_v1';
-const STORAGE_CONF = 'estetica_conf_v1';
-const STORAGE_PRICING = 'estetica_pricing_v1';
-const STORAGE_CHECK = 'estetica_checklist_state_v1';
+      <section class="card mt16">
+        <h3>Configurações</h3>
+        <label>Nome da estética</label>
+        <input id="nomeEstetica" placeholder="Ex: Meu Detail Pro">
+        <label>Nome do cliente / moto</label>
+        <input id="nomeCliente" placeholder="Ex: João - Honda CG 160">
+        <label>Observações</label>
+        <textarea id="obs" rows="3" placeholder="Observações do serviço..."></textarea>
 
-/* ---------- State ---------- */
-let produtos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let usosLocal = JSON.parse(localStorage.getItem(STORAGE_USOS) || '[]');
-let conf = JSON.parse(localStorage.getItem(STORAGE_CONF) || '{}');
+        <div class="row gap8 mt10">
+          <button onclick="salvarConfig()" class="btn">Salvar configuração</button>
+          <button class="btn ghost" onclick="carregarConfig()">Carregar configur.</button>
+        </div>
+      </section>
+    </div>
 
-/* checklist items (same set your provided) */
-const CHECK_ITEMS = [
-  'Conferir se a moto está fria',
-  'Fechar/selar partes elétricas sensíveis (USB, módulos, conexões)',
-  'Aplicar pré-lavagem/espuma (Hydrox Fast / MultiClean)',
-  'Deixar agir e enxaguar',
-  'Pneu dianteiro - limpeza',
-  'Roda dianteira - faces e palhetas',
-  'Cubos/raios',
-  'Pinça e pastilhas (limpeza cuidadosa)',
-  'Disco de freio (limpeza neutra)',
-  'Pneu traseiro - limpeza',
-  'Roda traseira - faces e cantos',
-  'Coroa e pinhão / proteção',
-  'Corrente - desengraxe e lubrificação (Motul C2)',
-  'Bloco do motor - limpeza (Canelinha / Cross Mol)',
-  'Tampas (magneto/embreagem) e pedaleiras',
-  'Escape (coletor, abafador, ponteira)',
-  'Mesas superior/inferior e suspensão',
-  'Bengalas e protetores',
-  'Balança e articulações',
-  'Para-lamas e carenagens',
-  'Painel de instrumentos (limpar sem agressão)',
-  'Bateria e capa',
-  'Guidão, manoplas e manetes',
-  'Espelhos',
-  'Farol e auxiliares',
-  'Setas e lanterna',
-  'Banco piloto e garupa',
-  'Fechaduras e tampas do tanque',
-  'Acessórios (proteções, baú, sliders)',
-  'Secagem completa e ar comprimido nas frestas',
-  'Aplicar verniz de motor / selante de pneus / cera',
-  'Verificar marcas d’água e retoques finais',
-];
+    <div class="full-col">
+      <section class="card">
+        <h3>Como usar / Persistência</h3>
+        <ol class="muted">
+          <li>Cadastrar produtos (só uma vez). Eles ficam salvos no navegador.</li>
+          <li>Configurar precificação em <strong>pricing.html</strong>.</li>
+          <li>Selecionar produto e registrar ml usado durante o serviço.</li>
+          <li>Marcar checklist e gerar PDF no final.</li>
+        </ol>
+      </section>
+    </div>
+  </main>
 
-/* ---------- Elements ---------- */
-const produtosList = document.getElementById('produtosList');
-const listaProdutos = document.getElementById('listaProdutos');
-const listaUsosDiv = document.getElementById('listaUsos');
-const totalGastoSpan = document.getElementById('totalGasto');
-const checklistGrid = document.getElementById('checklistGrid');
-const selectService = document.getElementById('selectService');
-const openPricing = document.getElementById('openPricing');
+  <footer class="footer">
+    Premium Detail + Luxury • Preto & Roxo — Studio Mandú
+  </footer>
 
-/* ---------- Navigation fix: open pricing in same tab ---------- */
-openPricing.addEventListener('click', ()=> {
-  window.location.href = 'pricing.html';
-});
+  <!-- ============================
+       JavaScript (mantive suas funções, só corrigi duas coisinhas)
+       ============================ -->
+  <script>
+  /* ---------- Storage keys ---------- */
+  const STORAGE_KEY = 'estetica_produtos_v1';
+  const STORAGE_USOS = 'estetica_usos_v1';
+  const STORAGE_CONF = 'estetica_conf_v1';
+  const STORAGE_PRICING = 'estetica_pricing_v1';
+  const STORAGE_CHECK = 'estetica_checklist_state_v1';
 
-/* ---------- Init ---------- */
-function init(){
-  renderProdutos();
-  renderListaProdutosSelect();
-  renderUsos();
-  renderChecklist();
-  loadConfToUI();
-  loadPricingToSelect();
-}
-init();
+  /* ---------- State ---------- */
+  let produtos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  let usosLocal = JSON.parse(localStorage.getItem(STORAGE_USOS) || '[]');
+  let conf = JSON.parse(localStorage.getItem(STORAGE_CONF) || '{}');
 
-/* ---------- Checklist (Deluxe) ---------- */
-function renderChecklist(){
-  checklistGrid.innerHTML = '';
-  const saved = JSON.parse(localStorage.getItem(STORAGE_CHECK) || '[]');
-  CHECK_ITEMS.forEach((txt,i)=>{
-    const card = document.createElement('div');
-    card.className = 'check-card' + (saved[i]? ' checked':'');
-    card.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="1" width="22" height="22" rx="6" stroke="rgba(255,255,255,0.06)" fill="none"/>
-        <path d="M6 12l3 3 9-9" stroke="${saved[i]? '#00FF9C' : 'rgba(255,255,255,0.5)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div>
-        <div class="title">${txt}</div>
-        <div class="sub">Toque para marcar / desmarcar</div>
-      </div>
-      <input type="checkbox" data-i="${i}" ${saved[i]? 'checked':''} />
-    `;
-    card.addEventListener('click', (e)=>{
-      // prevent nested button click issues
-      const cb = card.querySelector('input[type=checkbox]');
-      cb.checked = !cb.checked;
-      card.classList.toggle('checked', cb.checked);
-      saveChecklistState();
-      // update icon color
-      const path = card.querySelector('path');
-      if(path) path.setAttribute('stroke', cb.checked ? '#00FF9C' : 'rgba(255,255,255,0.5)');
-    });
-    checklistGrid.appendChild(card);
+  /* checklist items */
+  const CHECK_ITEMS = [
+    'Conferir se a moto está fria',
+    'Fechar/selar partes elétricas sensíveis (USB, módulos, conexões)',
+    'Aplicar pré-lavagem/espuma (Hydrox Fast / MultiClean)',
+    'Deixar agir e enxaguar',
+    'Pneu dianteiro - limpeza',
+    'Roda dianteira - faces e palhetas',
+    'Cubos/raios',
+    'Pinça e pastilhas (limpeza cuidadosa)',
+    'Disco de freio (limpeza neutra)',
+    'Pneu traseiro - limpeza',
+    'Roda traseira - faces e cantos',
+    'Coroa e pinhão / proteção',
+    'Corrente - desengraxe e lubrificação (Motul C2)',
+    'Bloco do motor - limpeza (Canelinha / Cross Mol)',
+    'Tampas (magneto/embreagem) e pedaleiras',
+    'Escape (coletor, abafador, ponteira)',
+    'Mesas superior/inferior e suspensão',
+    'Bengalas e protetores',
+    'Balança e articulações',
+    'Para-lamas e carenagens',
+    'Painel de instrumentos (limpar sem agressão)',
+    'Bateria e capa',
+    'Guidão, manoplas e manetes',
+    'Espelhos',
+    'Farol e auxiliares',
+    'Setas e lanterna',
+    'Banco piloto e garupa',
+    'Fechaduras e tampas do tanque',
+    'Acessórios (proteções, baú, sliders)',
+    'Secagem completa e ar comprimido nas frestas',
+    'Aplicar verniz de motor / selante de pneus / cera',
+    'Verificar marcas d’água e retoques finais',
+  ];
+
+  /* ---------- Elements ---------- */
+  const produtosList = document.getElementById('produtosList');
+  const listaProdutos = document.getElementById('listaProdutos');
+  const listaUsosDiv = document.getElementById('listaUsos');
+  const totalGastoSpan = document.getElementById('totalGasto');
+  const checklistGrid = document.getElementById('checklistGrid');
+  const selectService = document.getElementById('selectService');
+  const openPricing = document.getElementById('openPricing');
+
+  openPricing.addEventListener('click', ()=> {
+    window.location.href = 'pricing.html';
   });
-}
 
-function saveChecklistState(){
-  const arr = Array.from(checklistGrid.querySelectorAll('input[type=checkbox]')).map(cb=>cb.checked);
-  localStorage.setItem(STORAGE_CHECK, JSON.stringify(arr));
-}
-
-function getChecklistState(){
-  return Array.from(checklistGrid.querySelectorAll('input[type=checkbox]')).map((cb,i)=>({text:CHECK_ITEMS[i], checked:cb.checked}));
-}
-
-/* ---------- Produtos CRUD ---------- */
-function saveProdutos(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos)); }
-function saveUsos(){ localStorage.setItem(STORAGE_USOS, JSON.stringify(usosLocal)); }
-function saveConf(){ localStorage.setItem(STORAGE_CONF, JSON.stringify(conf)); }
-
-function renderProdutos(){
-  produtosList.innerHTML = '';
-  produtos.forEach((p,idx)=>{
-    const div = document.createElement('div');
-    div.className = 'produto-card';
-    div.innerHTML = `<div class='produto-info'><strong>${p.nome}</strong><div class='muted'>R$ ${p.preco.toFixed(2)} • ${p.quantidade}ml • R$/${(p.preco/p.quantidade).toFixed(3)}</div></div>
-      <div style='display:flex;gap:8px;align-items:center'>
-        <button class='ghost small' onclick='editProduto(${idx})'>Editar</button>
-        <button class='btn-danger small' onclick='removeProduto(${idx})'>Remover</button>
-      </div>`;
-    produtosList.appendChild(div);
-  });
-  renderListaProdutosSelect();
-}
-
-function renderListaProdutosSelect(){
-  listaProdutos.innerHTML = '';
-  if(produtos.length===0){
-    const o = document.createElement('option'); o.value=''; o.textContent='Nenhum produto cadastrado'; listaProdutos.appendChild(o); return;
+  function init(){
+    renderProdutos();
+    renderListaProdutosSelect();
+    renderUsos();
+    renderChecklist();
+    loadConfToUI();
+    loadPricingToSelect();
   }
-  produtos.forEach((p,idx)=>{
-    const o = document.createElement('option'); o.value=idx; o.textContent=`${p.nome} | R$${p.preco.toFixed(2)} / ${p.quantidade}ml`; listaProdutos.appendChild(o);
-  });
-}
+  init();
 
-function addProduto(){
-  const nome = document.getElementById('produtoNome').value.trim();
-  const preco = parseFloat(document.getElementById('produtoPreco').value);
-  const ml = parseFloat(document.getElementById('produtoML').value);
-  if(!nome || isNaN(preco) || isNaN(ml)){ alert('Preencha todos os campos do produto'); return; }
-  produtos.push({nome,nome, preco, quantidade:ml}); // earlier object key repeated? Fix properly below in edit
-  // fix: keep consistent
-  produtos[produtos.length-1] = {nome:nome, preco:preco, quantidade:ml};
-  saveProdutos(); renderProdutos();
-  document.getElementById('produtoNome').value='';document.getElementById('produtoPreco').value='';document.getElementById('produtoML').value='';
-}
-
-function editProduto(i){
-  const p = produtos[i];
-  const novoNome = prompt('Nome do produto', p.nome);
-  if(novoNome===null) return;
-  const novoPreco = parseFloat(prompt('Preço (R$)', p.preco));
-  if(isNaN(novoPreco)) return;
-  const novoMl = parseFloat(prompt('Quantidade (ml)', p.quantidade));
-  if(isNaN(novoMl)) return;
-  produtos[i]={nome:novoNome, preco:novoPreco, quantidade:novoMl}; saveProdutos(); renderProdutos();
-}
-
-function removeProduto(i){ if(!confirm('Remover produto?')) return; produtos.splice(i,1); saveProdutos(); renderProdutos(); }
-
-/* ---------- Usos (consumo por serviço) ---------- */
-function renderUsos(){
-  listaUsosDiv.innerHTML=''; let total=0;
-  usosLocal.forEach((u,idx)=>{
-    const div = document.createElement('div');
-    div.className='produto-card';
-    div.innerHTML = `<div><strong>${u.nome}</strong><div class='muted'>${u.qtd} ml • custo: R$ ${u.gasto.toFixed(2)}</div></div>
-      <div style='display:flex;gap:8px;align-items:center'>
-        <button class='ghost small' onclick='editarUso(${idx})'>Editar</button>
-        <button class='btn-danger small' onclick='removerUso(${idx})'>Remover</button>
-      </div>`;
-    listaUsosDiv.appendChild(div);
-    total += u.gasto;
-  });
-  totalGastoSpan.textContent = total.toFixed(2);
-  saveUsos();
-}
-
-function addUso(){
-  if(produtos.length===0){ alert('Cadastre primeiro produtos'); return; }
-  const idx = parseInt(listaProdutos.value);
-  if(isNaN(idx) || idx<0){ alert('Selecione um produto válido'); return; }
-  const qtd = parseFloat(document.getElementById('qtdUsada').value);
-  if(isNaN(qtd) || qtd<=0){ alert('Quantidade inválida'); return; }
-  const prod = produtos[idx];
-  const custoMl = prod.preco / prod.quantidade;
-  const gasto = custoMl * qtd;
-  usosLocal.push({nome:prod.nome, qtd, gasto});
-  document.getElementById('qtdUsada').value='';
-  renderUsos();
-}
-
-function removerUso(i){ if(!confirm('Remover este uso?')) return; usosLocal.splice(i,1); renderUsos(); }
-function editarUso(i){ const novo = parseFloat(prompt('Nova quantidade (ml)', usosLocal[i].qtd)); if(isNaN(novo)) return; const prod = produtos.find(p=>p.nome===usosLocal[i].nome); const custoMl = prod.preco/prod.quantidade; usosLocal[i].qtd=novo; usosLocal[i].gasto=custoMl*novo; renderUsos(); }
-function clearUsos(){ if(!confirm('Limpar todos os usos?')) return; usosLocal=[]; renderUsos(); }
-
-/* ---------- Config ---------- */
-function salvarConfig(){ conf.nomeEstetica = document.getElementById('nomeEstetica').value; conf.nomeCliente = document.getElementById('nomeCliente').value; conf.obs = document.getElementById('obs').value; saveConf(); alert('Configuração salva'); }
-function carregarConfig(){ loadConfToUI(); alert('Configuração carregada'); }
-function loadConfToUI(){ document.getElementById('nomeEstetica').value = conf.nomeEstetica||''; document.getElementById('nomeCliente').value = conf.nomeCliente||''; document.getElementById('obs').value = conf.obs||''; }
-
-/* ---------- Pricing integration ---------- */
-/* load pricing services into the select; pricing saved in pricing.html uses same STORAGE_PRICING key */
-function loadPricingToSelect(){
-  const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
-  selectService.innerHTML = '';
-  const opt0 = document.createElement('option'); opt0.value='-1'; opt0.textContent='Nenhum serviço configurado'; selectService.appendChild(opt0);
-  if(pricingState && pricingState.services && pricingState.services.length){
-    pricingState.services.forEach((s,idx)=>{
-      const opt = document.createElement('option');
-      const c = (s.cost || 0);
-      opt.value = idx;
-      opt.textContent = `${s.name} — R$ ${c.toFixed(2)} (h: ${s.hours})`;
-      selectService.appendChild(opt);
+  /* ---------- Checklist (Deluxe) ---------- */
+  function renderChecklist(){
+    checklistGrid.innerHTML = '';
+    const saved = JSON.parse(localStorage.getItem(STORAGE_CHECK) || '[]');
+    CHECK_ITEMS.forEach((txt,i)=>{
+      const card = document.createElement('div');
+      card.className = 'check-card' + (saved[i]? ' checked':'');
+      card.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="22" height="22" rx="6" stroke="rgba(255,255,255,0.06)" fill="none"/>
+          <path d="M6 12l3 3 9-9" stroke="${saved[i]? '#00FF9C' : 'rgba(255,255,255,0.5)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="title">${txt}</div>
+          <div class="sub">Toque para marcar / desmarcar</div>
+        </div>
+        <input type="checkbox" data-i="${i}" ${saved[i]? 'checked':''} />
+      `;
+      card.addEventListener('click', (e)=>{
+        const cb = card.querySelector('input[type=checkbox]');
+        cb.checked = !cb.checked;
+        card.classList.toggle('checked', cb.checked);
+        saveChecklistState();
+        const path = card.querySelector('path');
+        if(path) path.setAttribute('stroke', cb.checked ? '#00FF9C' : 'rgba(255,255,255,0.5)');
+      });
+      checklistGrid.appendChild(card);
     });
-    if(typeof pricingState.selected === 'number' && pricingState.selected >= 0){
-      selectService.value = pricingState.selected;
+  }
+
+  function saveChecklistState(){
+    const arr = Array.from(checklistGrid.querySelectorAll('input[type=checkbox]')).map(cb=>cb.checked);
+    localStorage.setItem(STORAGE_CHECK, JSON.stringify(arr));
+  }
+
+  function getChecklistState(){
+    return Array.from(checklistGrid.querySelectorAll('input[type=checkbox]')).map((cb,i)=>({text:CHECK_ITEMS[i], checked:cb.checked}));
+  }
+
+  /* ---------- Produtos CRUD ---------- */
+  function saveProdutos(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos)); }
+  function saveUsos(){ localStorage.setItem(STORAGE_USOS, JSON.stringify(usosLocal)); }
+  function saveConf(){ localStorage.setItem(STORAGE_CONF, JSON.stringify(conf)); }
+
+  function renderProdutos(){
+    produtosList.innerHTML = '';
+    produtos.forEach((p,idx)=>{
+      const div = document.createElement('div');
+      div.className = 'produto-card';
+      div.innerHTML = `<div class='produto-info'><strong>${p.nome}</strong><div class='muted'>R$ ${p.preco.toFixed(2)} • ${p.quantidade}ml • R$/${(p.preco/p.quantidade).toFixed(3)}</div></div>
+        <div style='display:flex;gap:8px;align-items:center'>
+          <button class='ghost small' onclick='editProduto(${idx})'>Editar</button>
+          <button class='btn-danger small' onclick='removeProduto(${idx})'>Remover</button>
+        </div>`;
+      produtosList.appendChild(div);
+    });
+    renderListaProdutosSelect();
+  }
+
+  function renderListaProdutosSelect(){
+    listaProdutos.innerHTML = '';
+    if(produtos.length===0){
+      const o = document.createElement('option'); o.value=''; o.textContent='Nenhum produto cadastrado'; listaProdutos.appendChild(o); return;
+    }
+    produtos.forEach((p,idx)=>{
+      const o = document.createElement('option'); o.value=idx; o.textContent=`${p.nome} | R$${p.preco.toFixed(2)} / ${p.quantidade}ml`; listaProdutos.appendChild(o);
+    });
+  }
+
+  function addProduto(){
+    const nome = document.getElementById('produtoNome').value.trim();
+    const preco = parseFloat(document.getElementById('produtoPreco').value);
+    const ml = parseFloat(document.getElementById('produtoML').value);
+    if(!nome || isNaN(preco) || isNaN(ml)){ alert('Preencha todos os campos do produto'); return; }
+    // push properly
+    produtos.push({nome: nome, preco: preco, quantidade: ml});
+    saveProdutos(); renderProdutos();
+    document.getElementById('produtoNome').value='';document.getElementById('produtoPreco').value='';document.getElementById('produtoML').value='';
+  }
+
+  function editProduto(i){
+    const p = produtos[i];
+    const novoNome = prompt('Nome do produto', p.nome);
+    if(novoNome===null) return;
+    const novoPreco = parseFloat(prompt('Preço (R$)', p.preco));
+    if(isNaN(novoPreco)) return;
+    const novoMl = parseFloat(prompt('Quantidade (ml)', p.quantidade));
+    if(isNaN(novoMl)) return;
+    produtos[i]={nome:novoNome, preco:novoPreco, quantidade:novoMl}; saveProdutos(); renderProdutos();
+  }
+
+  function removeProduto(i){ if(!confirm('Remover produto?')) return; produtos.splice(i,1); saveProdutos(); renderProdutos(); }
+
+  /* ---------- Usos (consumo por serviço) ---------- */
+  function renderUsos(){
+    listaUsosDiv.innerHTML=''; let total=0;
+    usosLocal.forEach((u,idx)=>{
+      const div = document.createElement('div');
+      div.className='produto-card';
+      div.innerHTML = `<div><strong>${u.nome}</strong><div class='muted'>${u.qtd} ml • custo: R$ ${u.gasto.toFixed(2)}</div></div>
+        <div style='display:flex;gap:8px;align-items:center'>
+          <button class='ghost small' onclick='editarUso(${idx})'>Editar</button>
+          <button class='btn-danger small' onclick='removerUso(${idx})'>Remover</button>
+        </div>`;
+      listaUsosDiv.appendChild(div);
+      total += u.gasto;
+    });
+    totalGastoSpan.textContent = total.toFixed(2);
+    saveUsos();
+  }
+
+  function addUso(){
+    if(produtos.length===0){ alert('Cadastre primeiro produtos'); return; }
+    const idx = parseInt(listaProdutos.value);
+    if(isNaN(idx) || idx<0){ alert('Selecione um produto válido'); return; }
+    const qtd = parseFloat(document.getElementById('qtdUsada').value);
+    if(isNaN(qtd) || qtd<=0){ alert('Quantidade inválida'); return; }
+    const prod = produtos[idx];
+    const custoMl = prod.preco / prod.quantidade;
+    const gasto = custoMl * qtd;
+    usosLocal.push({nome:prod.nome, qtd, gasto});
+    document.getElementById('qtdUsada').value='';
+    renderUsos();
+  }
+
+  function removerUso(i){ if(!confirm('Remover este uso?')) return; usosLocal.splice(i,1); renderUsos(); }
+  function editarUso(i){ const novo = parseFloat(prompt('Nova quantidade (ml)', usosLocal[i].qtd)); if(isNaN(novo)) return; const prod = produtos.find(p=>p.nome===usosLocal[i].nome); const custoMl = prod.preco/prod.quantidade; usosLocal[i].qtd=novo; usosLocal[i].gasto=custoMl*novo; renderUsos(); }
+  function clearUsos(){ if(!confirm('Limpar todos os usos?')) return; usosLocal=[]; renderUsos(); }
+
+  /* ---------- Config ---------- */
+  function salvarConfig(){ conf.nomeEstetica = document.getElementById('nomeEstetica').value; conf.nomeCliente = document.getElementById('nomeCliente').value; conf.obs = document.getElementById('obs').value; saveConf(); alert('Configuração salva'); }
+  function carregarConfig(){ loadConfToUI(); alert('Configuração carregada'); }
+  function loadConfToUI(){ document.getElementById('nomeEstetica').value = conf.nomeEstetica||''; document.getElementById('nomeCliente').value = conf.nomeCliente||''; document.getElementById('obs').value = conf.obs||''; }
+
+  /* ---------- Pricing integration ---------- */
+  function loadPricingToSelect(){
+    const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
+    selectService.innerHTML = '';
+    const opt0 = document.createElement('option'); opt0.value='-1'; opt0.textContent='Nenhum serviço configurado'; selectService.appendChild(opt0);
+    if(pricingState && pricingState.services && pricingState.services.length){
+      pricingState.services.forEach((s,idx)=>{
+        const opt = document.createElement('option');
+        const c = (s.cost || 0);
+        opt.value = idx;
+        opt.textContent = `${s.name} — R$ ${c.toFixed(2)} (h: ${s.hours})`;
+        selectService.appendChild(opt);
+      });
+      if(typeof pricingState.selected === 'number' && pricingState.selected >= 0){
+        selectService.value = pricingState.selected;
+      }
     }
   }
-}
 
-/* when selecting a service, save selection into pricingState.selected so PDF picks it */
-selectService.addEventListener('change', ()=>{
-  const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
-  if(!pricingState) return;
-  pricingState.selected = parseInt(selectService.value);
-  localStorage.setItem(STORAGE_PRICING, JSON.stringify(pricingState));
-});
+  selectService.addEventListener('change', ()=>{
+    const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
+    if(!pricingState) return;
+    pricingState.selected = parseInt(selectService.value);
+    localStorage.setItem(STORAGE_PRICING, JSON.stringify(pricingState));
+  });
 
-/* ---------- Export / Import JSON ---------- */
-function exportarJSON(){
-  const data = {produtos, usos:usosLocal, conf, checklist: getChecklistState(), pricing: JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null')};
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'estetica_dados.json'; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
-}
+  /* ---------- Export / Import JSON ---------- */
+  function exportarJSON(){
+    const data = {produtos, usos:usosLocal, conf, checklist: getChecklistState(), pricing: JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null')};
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'estetica_dados.json'; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+  }
 
-/* helper import by user via console or drag-drop (keeps simple) */
-window.importFromFile = function(file){
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try{
-      const data = JSON.parse(e.target.result);
-      if(data.produtos) produtos = data.produtos;
-      if(data.usos) usosLocal = data.usos;
-      if(data.conf) conf = data.conf;
-      if(data.pricing) localStorage.setItem(STORAGE_PRICING, JSON.stringify(data.pricing));
-      saveProdutos(); saveUsos(); saveConf(); renderProdutos(); renderUsos(); loadConfToUI(); loadPricingToSelect();
-      alert('Importado com sucesso');
-    }catch(err){ alert('Erro ao importar: '+err); }
+  window.importFromFile = function(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        const data = JSON.parse(e.target.result);
+        if(data.produtos) produtos = data.produtos;
+        if(data.usos) usosLocal = data.usos;
+        if(data.conf) conf = data.conf;
+        if(data.pricing) localStorage.setItem(STORAGE_PRICING, JSON.stringify(data.pricing));
+        saveProdutos(); saveUsos(); saveConf(); renderProdutos(); renderUsos(); loadConfToUI(); loadPricingToSelect();
+        alert('Importado com sucesso');
+      }catch(err){ alert('Erro ao importar: '+err); }
+    };
+    reader.readAsText(file);
   };
-  reader.readAsText(file);
-};
 
-/* ---------- PDF generation (products + selected service cost + 30% profit) ---------- */
-async function gerarPDF(){
-  const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
-  const selectedService = (pricingState && typeof pricingState.selected === 'number' && pricingState.services && pricingState.services[pricingState.selected]) ? pricingState.services[pricingState.selected] : null;
-  const laborCost = selectedService ? (selectedService.cost || 0) : 0;
-  const totalProducts = usosLocal.reduce((s,u)=>s+u.gasto,0);
-  const subtotal = totalProducts + laborCost;
-  const profit = subtotal * 0.30;
-  const final = subtotal + profit;
+  /* ---------- PDF generation (products + selected service cost + 30% profit) ---------- */
+  async function gerarPDF(){
+    const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
+    const selectedService = (pricingState && typeof pricingState.selected === 'number' && pricingState.services && pricingState.services[pricingState.selected]) ? pricingState.services[pricingState.selected] : null;
+    const laborCost = selectedService ? (selectedService.cost || 0) : 0;
+    const totalProducts = usosLocal.reduce((s,u)=>s+u.gasto,0);
+    const subtotal = totalProducts + laborCost;
+    const profit = subtotal * 0.30;
+    const final = subtotal + profit;
 
-  // build printable DOM
-  const pdfRoot = document.createElement('div'); pdfRoot.style.padding='20px'; pdfRoot.style.background='#fff'; pdfRoot.style.color='#000'; pdfRoot.style.fontFamily='Arial'; pdfRoot.style.width='820px';
-  const title = document.createElement('h2'); title.textContent = conf.nomeEstetica || 'Estética de Motos'; pdfRoot.appendChild(title);
-  pdfRoot.appendChild(Object.assign(document.createElement('div'),{innerHTML:`<strong>Cliente / Moto:</strong> ${conf.nomeCliente||'-'}`}));
-  pdfRoot.appendChild(Object.assign(document.createElement('div'),{innerHTML:`<strong>Observações:</strong> ${conf.obs||'-'}`}));
-  pdfRoot.appendChild(document.createElement('hr'));
-  const hP = document.createElement('h3'); hP.textContent='Produtos usados'; pdfRoot.appendChild(hP);
-  usosLocal.forEach(u=>{ pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`${u.nome} — ${u.qtd} ml — R$ ${u.gasto.toFixed(2)}`})); });
-  pdfRoot.appendChild(document.createElement('hr'));
-  const hL = document.createElement('h3'); hL.textContent='Mão de obra (serviço selecionado)'; pdfRoot.appendChild(hL);
-  pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent: selectedService ? `${selectedService.name} — R$ ${laborCost.toFixed(2)} (horas: ${selectedService.hours})` : 'Nenhum serviço selecionado'}));
-  pdfRoot.appendChild(document.createElement('hr'));
-  const hC = document.createElement('h3'); hC.textContent='Checklist'; pdfRoot.appendChild(hC);
-  getChecklistState().forEach(c=>{ pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent: `${c.checked? '✔':'◻'} ${c.text}`})); });
-  pdfRoot.appendChild(document.createElement('hr'));
-  pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Produtos: R$ ${totalProducts.toFixed(2)} | Mão de obra: R$ ${laborCost.toFixed(2)}`}));
-  pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Subtotal: R$ ${subtotal.toFixed(2)}`}));
-  pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Lucro (30%): R$ ${profit.toFixed(2)}`}));
-  pdfRoot.appendChild(Object.assign(document.createElement('h2'),{textContent:`Valor sugerido ao cliente: R$ ${final.toFixed(2)}`}));
+    const pdfRoot = document.createElement('div'); pdfRoot.style.padding='20px'; pdfRoot.style.background='#fff'; pdfRoot.style.color='#000'; pdfRoot.style.fontFamily='Arial'; pdfRoot.style.width='820px';
+    const title = document.createElement('h2'); title.textContent = conf.nomeEstetica || 'Estética de Motos'; pdfRoot.appendChild(title);
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{innerHTML:`<strong>Cliente / Moto:</strong> ${conf.nomeCliente||'-'}`}));
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{innerHTML:`<strong>Observações:</strong> ${conf.obs||'-'}`}));
+    pdfRoot.appendChild(document.createElement('hr'));
+    const hP = document.createElement('h3'); hP.textContent='Produtos usados'; pdfRoot.appendChild(hP);
+    usosLocal.forEach(u=>{ pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`${u.nome} — ${u.qtd} ml — R$ ${u.gasto.toFixed(2)}`})); });
+    pdfRoot.appendChild(document.createElement('hr'));
+    const hL = document.createElement('h3'); hL.textContent='Mão de obra (serviço selecionado)'; pdfRoot.appendChild(hL);
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent: selectedService ? `${selectedService.name} — R$ ${laborCost.toFixed(2)} (horas: ${selectedService.hours})` : 'Nenhum serviço selecionado'}));
+    pdfRoot.appendChild(document.createElement('hr'));
+    const hC = document.createElement('h3'); hC.textContent='Checklist'; pdfRoot.appendChild(hC);
+    getChecklistState().forEach(c=>{ pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent: `${c.checked? '✔':'◻'} ${c.text}`})); });
+    pdfRoot.appendChild(document.createElement('hr'));
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Produtos: R$ ${totalProducts.toFixed(2)} | Mão de obra: R$ ${laborCost.toFixed(2)}`}));
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Subtotal: R$ ${subtotal.toFixed(2)}`}));
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Lucro (30%): R$ ${profit.toFixed(2)}`}));
+    pdfRoot.appendChild(Object.assign(document.createElement('h2'),{textContent:`Valor sugerido ao cliente: R$ ${final.toFixed(2)}`}));
 
-  document.body.appendChild(pdfRoot);
-  const canvas = await html2canvas(pdfRoot, {scale:2});
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({orientation:'portrait', unit:'px', format:[canvas.width, canvas.height]});
-  pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-  pdf.save((conf.nomeEstetica||'relatorio') + '_servico.pdf');
-  pdfRoot.remove();
-}
+    document.body.appendChild(pdfRoot);
+    const canvas = await html2canvas(pdfRoot, {scale:2});
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({orientation:'portrait', unit:'px', format:[canvas.width, canvas.height]});
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save((conf.nomeEstetica||'relatorio') + '_servico.pdf');
+    pdfRoot.remove();
+  }
 
-/* ---------- small demo import preset ---------- */
-function importDemo(){
-  const demo = [
-    {nome:'Canelinha Finisher', preco:39.9, quantidade:500},
-    {nome:'Cross Mol Finisher', preco:45.0, quantidade:500},
-    {nome:'MultiClean', preco:30.0, quantidade:500},
-    {nome:'Alumax Vintex', preco:52.0, quantidade:500},
-    {nome:'Verniz de motor Motor Shine Protelim', preco:60.0, quantidade:200},
-    {nome:'Selante para pneus Protelim', preco:35.0, quantidade:300},
-    {nome:'Hydrox Fast Vonixx', preco:48.0, quantidade:500},
-    {nome:'Cera Cherry Wax Zacs', preco:80.0, quantidade:300},
-    {nome:'Revitalizador de plásticos Zacs', preco:28.0, quantidade:250},
-    {nome:'Motul C2', preco:25.0, quantidade:100}
-  ];
-  produtos = produtos.concat(demo);
-  saveProdutos(); renderProdutos(); alert('Produtos padrão importados');
-}
+  /* ---------- small demo import preset ---------- */
+  function importDemo(){
+    const demo = [
+      {nome:'Canelinha Finisher', preco:39.9, quantidade:500},
+      {nome:'Cross Mol Finisher', preco:45.0, quantidade:500},
+      {nome:'MultiClean', preco:30.0, quantidade:500},
+      {nome:'Alumax Vintex', preco:52.0, quantidade:500},
+      {nome:'Verniz de motor Motor Shine Protelim', preco:60.0, quantidade:200},
+      {nome:'Selante para pneus Protelim', preco:35.0, quantidade:300},
+      {nome:'Hydrox Fast Vonixx', preco:48.0, quantidade:500},
+      {nome:'Cera Cherry Wax Zacs', preco:80.0, quantidade:300},
+      {nome:'Revitalizador de plásticos Zacs', preco:28.0, quantidade:250},
+      {nome:'Motul C2', preco:25.0, quantidade:100}
+    ];
+    produtos = produtos.concat(demo);
+    saveProdutos(); renderProdutos(); alert('Produtos padrão importados');
+  }
 
-/* ---------- init helper to get pricing refresh when user returns from pricing.html ---------- */
-window.addEventListener('focus', ()=>{ loadPricingToSelect(); });
+  window.addEventListener('focus', ()=>{ loadPricingToSelect(); });
 
-</script>
+  /*---------------------------------- limpar checklist ---------------------------------------*/
+  function limparChecklist(){
+    if(!confirm("Desmarcar todo checklist?")) return;
+    const checks = checklistGrid.querySelectorAll('input[type=checkbox]');
+    checks.forEach(cb=>{
+      cb.checked = false;
+      const card = cb.closest('.check-card');
+      if(card) card.classList.remove('checked');
+      const path = card ? card.querySelector('path') : null;
+      if(path) path.setAttribute('stroke', 'rgba(255,255,255,0.5)');
+    });
+    saveChecklistState();
+  }
+  </script>
 </body>
 </html>

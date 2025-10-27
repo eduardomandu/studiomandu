@@ -1,0 +1,216 @@
+/* Studio Mandú — Crystal Clean Translucent (Green-Tech) */
+/* Visual only. No functions changed. */
+
+:root{
+  --bg-grad: radial-gradient(1200px 800px at 10% 0%, rgba(0, 255, 171, 0.08), transparent 60%),
+             radial-gradient(900px 600px at 90% 10%, rgba(0, 168, 255, 0.06), transparent 60%),
+             linear-gradient(180deg, #0b0f12 0%, #0a0d10 100%);
+  --glass: rgba(255,255,255,0.06);
+  --glass-strong: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.14);
+  --muted: #cfe7df;
+  --text: #eaf6f2;
+  --accent: #17f0a6;
+  --accent-2: #8cf3ff;
+  --danger: #ff4d6d;
+  --shadow: 0 8px 30px rgba(0,0,0,0.35);
+  --radius: 14px;
+  --pad: 16px;
+}
+
+*{box-sizing:border-box}
+html, body{height:100%}
+body{
+  margin:0;
+  color:var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg-grad);
+  background-attachment: fixed;
+  line-height:1.35;
+}
+
+/* Animations */
+@keyframes floatIn {
+  from { opacity:0; transform: translateY(14px) scale(0.98); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+@keyframes pulseEdge {
+  0% { box-shadow: 0 0 0 0 rgba(23, 240, 166, 0.35); }
+  70%{ box-shadow: 0 0 0 12px rgba(23, 240, 166, 0); }
+  100%{ box-shadow: 0 0 0 0 rgba(23, 240, 166, 0); }
+}
+
+/* Header */
+header{
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  padding: 28px 16px 10px;
+  gap: 14px;
+  position:relative;
+}
+h1, h2, h3, h4{ margin:0 0 6px 0 }
+h1{ letter-spacing:.4px; font-weight:800; background:linear-gradient(90deg,#d6fff1,#b7fff6,#eaffff); -webkit-background-clip:text; color:transparent }
+
+/* Floating pricing button */
+#openPricing, header > button, .btn-floating{
+  position:absolute; top:22px; right:22px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(23,240,166,.18), rgba(140,243,255,.14));
+  border: 1px solid rgba(140,243,255,.28);
+  color: var(--text);
+  font-weight:700; cursor:pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease;
+}
+#openPricing:hover{
+  transform: translateY(-2px);
+  border-color: rgba(23,240,166,.65);
+  box-shadow: 0 10px 26px rgba(23,240,166,.18), 0 6px 18px rgba(0,0,0,.45);
+}
+
+/* Logo area */
+#logoArea{
+  width: 240px; height: 120px; border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.16);
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+  animation: floatIn .45s ease-out both;
+}
+.logo-img{
+  max-width: 100%; max-height: 100%; object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(23,240,166,.65)) brightness(1.05);
+  animation: neonFloat 3.8s ease-in-out infinite;
+}
+@keyframes neonFloat{
+  0% { transform: translateY(0); filter: drop-shadow(0 0 10px rgba(23,240,166,.5)); }
+  50%{ transform: translateY(-4px); filter: drop-shadow(0 0 18px rgba(140,243,255,1)); }
+  100%{ transform: translateY(0); filter: drop-shadow(0 0 10px rgba(23,240,166,.5)); }
+}
+
+/* Layout */
+.container{
+  max-width: 1150px;
+  margin: 10px auto 28px;
+  padding: 0 16px;
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap: 18px;
+  animation: floatIn .5s ease-out both;
+}
+.full{ grid-column: 1/3; }
+
+section{
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+}
+section:hover{
+  transform: translateY(-3px);
+  border-color: rgba(140,243,255,.35);
+  box-shadow: 0 14px 40px rgba(0,0,0,.45), 0 10px 28px rgba(140,243,255,.08);
+}
+
+/* Forms */
+label{ display:block; font-size:12px; color:var(--muted); margin-top:8px }
+input,select,textarea{
+  width:100%; padding:12px 12px; margin-top:8px;
+  border-radius:12px; border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  outline:none;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .08s ease;
+  backdrop-filter: blur(8px);
+}
+input:focus, select:focus, textarea:focus{
+  border-color: rgba(23,240,166,.55);
+  box-shadow: 0 0 0 6px rgba(23,240,166,.12);
+}
+textarea{ min-height: 90px }
+
+/* Buttons */
+button{
+  background: linear-gradient(90deg, rgba(23,240,166,.7), rgba(140,243,255,.65));
+  border: 1px solid rgba(140,243,255,.4);
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: #07110f;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  transition: transform .1s ease, box-shadow .18s ease, filter .18s ease;
+  margin-bottom: 8px; /* pedido: dar respiro nos botões */
+}
+button:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 12px 26px rgba(23,240,166,.22), 0 6px 18px rgba(0,0,0,.45);
+}
+button.small{ padding: 8px 10px; font-size: 13px }
+.btn-danger{ background: linear-gradient(90deg, #ff6a85, #ff4d6d); color: #fff; border: 1px solid rgba(255,255,255,.24) }
+.ghost{ background: rgba(255,255,255,.04); color: var(--text); border:1px solid rgba(255,255,255,.18) }
+.ghost:hover{ border-color: rgba(23,240,166,.6) }
+
+/* Utilities */
+.row{ display:flex; gap:12px }
+.col{ flex: 1 }
+.muted{ color: var(--muted); font-size: 13px }
+
+/* Cards list (produtos & usos) */
+.produto-card{
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 10px 12px; border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.14);
+  margin-top:10px;
+  transition: transform .1s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.produto-card:hover{
+  transform: translateY(-2px);
+  border-color: rgba(23,240,166,.5);
+  box-shadow: 0 10px 24px rgba(23,240,166,.12);
+  animation: pulseEdge 1.6s ease-out 1;
+}
+.produto-info{ font-size: 14px }
+
+/* Checklist deluxe */
+.check-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px }
+.check-card{
+  background: linear-gradient(180deg, rgba(140,243,255,.10), rgba(23,240,166,.08));
+  border:1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 12px;
+  display:flex; gap:12px; align-items:center;
+  cursor:pointer;
+  transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+  backdrop-filter: blur(8px);
+}
+.check-card:hover{
+  transform: translateY(-4px);
+  border-color: rgba(23,240,166,.6);
+  box-shadow: 0 12px 30px rgba(23,240,166,.12);
+}
+.check-card.checked{
+  background: linear-gradient(90deg, rgba(23,240,166,.28), rgba(140,243,255,.16));
+  box-shadow: 0 10px 26px rgba(23,240,166,.14);
+}
+.check-card svg{ width:36px; height:36px; flex-shrink:0 }
+.check-card .title{ font-weight:800 }
+.check-card .sub{ font-size:12px; color: var(--muted); margin-top:6px }
+.check-card input{ display:none }
+
+/* Footer */
+footer{ margin: 22px 0 18px; text-align:center; color: var(--muted); font-size: 13px }
+
+/* Responsivo */
+@media(max-width: 980px){
+  .container{ grid-template-columns: 1fr; }
+  .full{ grid-column: 1; }
+  #openPricing{ position:fixed; top:18px; right:18px; z-index:9 }
+}
