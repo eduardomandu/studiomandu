@@ -4,8 +4,37 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Precificação - Estética de Motos (Avançado)</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body {
+    padding: 40px 60px; /* Adiciona espaçamento nas laterais e topo */
+  }
+  .card {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 18px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
 
-    <link rel="stylesheet" href="style.css">
+  .row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .row input {
+    flex: 1;
+  }
+
+  button.small-btn {
+    background: #222;
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+</style>
 </head>
 <body>
 <div class="card">
@@ -20,7 +49,7 @@
     <button class="btn" onclick="addFixed()">Adicionar</button>
   </div>
 
-  <label style="margin-top:12px">Custos variáveis (por serviço)</label>
+  <label>Custos variáveis (por serviço)</label>
   <div id="varList"></div>
   <div class="row">
     <input id="varName" placeholder="Nome (Ex: Panos)">
@@ -28,25 +57,25 @@
     <button class="btn" onclick="addVar()">Adicionar</button>
   </div>
 
-  <label style="margin-top:12px">Horas trabalhadas por mês</label>
+  <label>Horas trabalhadas por mês</label>
   <input id="hoursPerMonth" placeholder="Ex: 64" value="64">
 
   <label>Margem de lucro (%)</label>
   <input id="profitMargin" placeholder="Ex: 10" value="10">
 
-  <hr style="border-color:rgba(255,255,255,0.04);margin-top:12px">
+  <hr style="border-color:rgba(255,255,255,0.1);margin-top:20px">
 
   <label>Serviços</label>
-  <div style="display:flex;gap:8px;margin-top:8px">
-    <input id="svcName" placeholder="Ex: Lavagem Detalhada" style="flex:2">
-    <input id="svcHours" placeholder="Horas" style="width:100px">
-    <input id="svcExtra" placeholder="Custo variável extra (R$)" style="width:140px">
+  <div class="row">
+    <input id="svcName" placeholder="Ex: Lavagem Detalhada">
+    <input id="svcHours" placeholder="Horas">
+    <input id="svcExtra" placeholder="Custo variável extra (R$)">
     <button class="btn" onclick="addService()">Adicionar serviço</button>
   </div>
 
   <div class="services" id="servicesList"></div>
 
-  <div style="display:flex;gap:10px;margin-top:14px">
+  <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
     <button class="btn" onclick="savePricing()">Salvar precificação</button>
     <button class="btn" onclick="applySample()">Importar exemplo</button>
     <button class="btn" onclick="exportPricing()">Exportar JSON</button>
