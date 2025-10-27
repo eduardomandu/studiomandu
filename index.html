@@ -422,30 +422,33 @@
       pdfRoot.remove();
     }
 
-/* --- Carregar produtos automaticamente do produtos.json --- */
-async function carregarProdutosPadrao() {
+async function carregarDadosPadrao() {
   try {
-    if (produtos.length === 0) {
-      let url = window.location.origin + window.location.pathname;
-      url = url.substring(0, url.lastIndexOf('/') + 1) + 'produtos.json';
+    const response = await fetch('produtos.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Falha ao carregar JSON');
 
-      const response = await fetch(url, { cache: 'no-store' }); // força sempre atualizar
-      if (!response.ok) throw new Error('Falha ao carregar o arquivo JSON');
+    const data = await response.json();
 
-      const data = await response.json();
-      produtos = data;
+    // Produtos
+    if (data.produtos && Array.isArray(data.produtos)) {
+      produtos = data.produtos;
       saveProdutos();
       renderProdutos();
-      console.log('✅ Produtos carregados automaticamente do produtos.json!');
-    } else {
-      console.log('Produtos já existem no armazenamento local.');
     }
-  } catch (error) {
-    console.error('⚠️ Erro ao carregar produtos:', error);
+
+    // Precificação
+    if (data.precificacao) {
+      localStorage.setItem('estetica_pricing_v1', JSON.stringify(data.precificacao));
+      loadPricingToSelect();
+    }
+
+    console.log('✅ Dados carregados do produtos.json');
+  } catch (err) {
+    console.error('⚠️ Erro ao carregar produtos.json:', err);
   }
 }
 
-window.addEventListener('DOMContentLoaded', carregarProdutosPadrao);
+window.addEventListener('DOMContentLoaded', carregarDadosPadrao);
 
 
     /*---------------------------------- limpar checklist ---------------------------------------*/
