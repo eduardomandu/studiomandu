@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <style>
   body {
-    padding: 40px 60px; /* Adiciona espaçamento nas laterais e topo */
+    padding: 40px 60px;
   }
   .card {
     max-width: 1100px;
@@ -18,7 +18,6 @@
     backdrop-filter: blur(14px);
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   }
-
   .row {
     display: flex;
     gap: 10px;
@@ -27,7 +26,6 @@
   .row input {
     flex: 1;
   }
-
   button.small-btn {
     background: #222;
     color: #fff;
@@ -253,10 +251,21 @@ function loadForm(){
 
 function backToMain(){ savePricing(); window.location.href='index.html'; }
 
-/* 🔥 NOVA FUNÇÃO: exporta produtos + precificação para um único JSON */
-function exportarJSONCompleto() {
+/* 🔥 CORRIGIDA E TESTADA — Exporta produtos + precificação */
+async function exportarJSONCompleto() {
   try {
-    const produtos = JSON.parse(localStorage.getItem('estetica_produtos_v1') || '[]');
+    let produtos = [];
+    const localProdutos = localStorage.getItem('estetica_produtos_v1');
+    if (localProdutos) {
+      produtos = JSON.parse(localProdutos);
+    } else {
+      const resp = await fetch('produtos.json', { cache: 'no-store' });
+      if (resp.ok) {
+        const data = await resp.json();
+        produtos = data.produtos || [];
+      }
+    }
+
     const precificacao = pricing;
     const data = { produtos, precificacao };
 
@@ -271,9 +280,11 @@ function exportarJSONCompleto() {
       URL.revokeObjectURL(url);
       a.remove();
     }, 500);
+
+    alert('✅ Exportação concluída com sucesso!');
   } catch (e) {
     console.error('Erro ao exportar JSON completo:', e);
-    alert('Erro ao exportar JSON completo. Verifique o console.');
+    alert('⚠️ Ocorreu um erro ao exportar. Veja o console para detalhes.');
   }
 }
 
