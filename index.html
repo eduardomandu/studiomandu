@@ -41,8 +41,8 @@
         </div>
 
         <div class="row gap10">
-          <button onclick="addProduto()" class="btn">Adicionar produto</button>
-          <button class="btn ghost" onclick="importDemo()">Importar produtos</button>
+          <button onclick="addProduto()" class="btn" style="margin-top: 13px;">Adicionar produto</button>
+          <button class="btn ghost" onclick="importDemo()" style="margin-top: 13px;">Importar produtos</button>
         </div>
 
         <div id="produtosList" class="list-area"></div>
@@ -52,7 +52,7 @@
         <div class="section-header">
           <h3>Checklist Deluxe</h3>
           <div class="section-actions">
-            <button class="ghost small" onclick="limparChecklist()" style="margin-bottom:0">Limpar checklist</button>
+            <button class="ghost small" onclick="limparChecklist()" style="margin-bottom: 10px" style="margin: 10px;">Limpar checklist</button>
           </div>
         </div>
         <div class="check-grid" id="checklistGrid"></div>
@@ -383,14 +383,14 @@
     reader.readAsText(file);
   };
 
-  /* ---------- PDF generation (products + selected service cost + 30% profit) ---------- */
+  /* ---------- PDF generation (products + selected service cost + 10% profit) ---------- */
   async function gerarPDF(){
     const pricingState = JSON.parse(localStorage.getItem(STORAGE_PRICING) || 'null');
     const selectedService = (pricingState && typeof pricingState.selected === 'number' && pricingState.services && pricingState.services[pricingState.selected]) ? pricingState.services[pricingState.selected] : null;
     const laborCost = selectedService ? (selectedService.cost || 0) : 0;
     const totalProducts = usosLocal.reduce((s,u)=>s+u.gasto,0);
     const subtotal = totalProducts + laborCost;
-    const profit = subtotal * 0.30;
+    const profit = subtotal * 0.10;
     const final = subtotal + profit;
 
     const pdfRoot = document.createElement('div'); pdfRoot.style.padding='20px'; pdfRoot.style.background='#fff'; pdfRoot.style.color='#000'; pdfRoot.style.fontFamily='Arial'; pdfRoot.style.width='820px';
@@ -409,7 +409,7 @@
     pdfRoot.appendChild(document.createElement('hr'));
     pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Produtos: R$ ${totalProducts.toFixed(2)} | Mão de obra: R$ ${laborCost.toFixed(2)}`}));
     pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Subtotal: R$ ${subtotal.toFixed(2)}`}));
-    pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Lucro (30%): R$ ${profit.toFixed(2)}`}));
+    pdfRoot.appendChild(Object.assign(document.createElement('div'),{textContent:`Lucro (10%): R$ ${profit.toFixed(2)}`}));
     pdfRoot.appendChild(Object.assign(document.createElement('h2'),{textContent:`Valor sugerido ao cliente: R$ ${final.toFixed(2)}`}));
 
     document.body.appendChild(pdfRoot);
